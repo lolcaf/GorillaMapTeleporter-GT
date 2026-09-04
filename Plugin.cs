@@ -8,7 +8,6 @@ using GorillaNetworking;
 using GorillaTagScripts.VirtualStumpCustomMaps;
 using Photon.Pun;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -24,13 +23,13 @@ public class Plugin : BaseUnityPlugin
     /* Current supported maps:
     Forest
     City
+    Mall
     Canyons
     Clouds
     Caves
     Mountain
     Basement
     Metropolis
-    Arcade
     Critters
     Skate Park
     Monke Blocks
@@ -58,7 +57,6 @@ public class Plugin : BaseUnityPlugin
         { GTZone.skyJungle, new Vector3(-77, 164, -98) },
         { GTZone.basement, new Vector3(-35.5f, 14.75f, -89.1f) },
         { GTZone.Metropolis, new Vector3(63, 4, -240) },
-        { GTZone.arcade, new Vector3(-31.7f, 25.5f, -100f) },
         { GTZone.arena, new Vector3(100, 5, 200 ) },
         { GTZone.monkeBlocksShared, new Vector3(-282, 31.5f, -223.5f) }
     };
