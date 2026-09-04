@@ -16,8 +16,6 @@ public class MenuManager : MonoBehaviour
 
     private float menuToggleCooldown;
 
-    private bool menuLocked = false;
-
     private void Start()
     {
         Instance = this;
@@ -26,9 +24,8 @@ public class MenuManager : MonoBehaviour
         page2 = offsetGO.transform.Find("Page2").gameObject;
         Plugin.Log.WriteLine("MenuManager Added");
         offsetGO.transform.Find("Version").gameObject.GetComponent<TextMeshPro>().text = "Version: " + Constants.Version;
-        offsetGO.transform.localPosition = new Vector3(0, -0.1f, 0.6f); // fixed the offset, I dont wanna build the asset bundle again
-        page1.SetActive(true);
-        page2.SetActive(false);
+        offsetGO.transform.position += new Vector3(0, -0.2f, 0);
+        transform.localScale = Vector3.one;
         SetupButtons();
         offsetGO.SetActive(false);
     }
@@ -40,16 +37,18 @@ public class MenuManager : MonoBehaviour
             offsetGO.SetActive(false);
             return;
         }
-        if (ControllerInputPoller.instance.rightControllerPrimaryButton && Time.time > menuToggleCooldown && menuLocked == false)
+        if (ControllerInputPoller.instance.rightControllerPrimaryButton && Time.time > menuToggleCooldown)
         {
-            menuToggleCooldown = Time.time + 0.4f;
-            offsetGO.SetActive(!offsetGO.activeSelf);
+            ToggleMenu();
         }
-        if (offsetGO.activeSelf)
-        {
-            transform.position = Camera.main.transform.position;
-            transform.rotation = Camera.main.transform.rotation;
-        }
+    }
+
+    private void ToggleMenu()
+    {
+        menuToggleCooldown = Time.time + 0.4f;
+        offsetGO.SetActive(!offsetGO.activeSelf);
+        transform.position = Camera.main.transform.position;
+        transform.rotation = Camera.main.transform.rotation;
     }
 
     private void SetupButtons()
@@ -60,13 +59,13 @@ public class MenuManager : MonoBehaviour
 
         ConnectButton("Forest", 1, GTZone.forest);
         ConnectButton("City", 1, GTZone.city);
+        ConnectButton("Mall", 1, GTZone.mall);
         ConnectButton("Canyon", 1, GTZone.canyon);
         ConnectButton("Cloud", 1, GTZone.skyJungle);
         ConnectButton("Cave", 1, GTZone.cave);
         ConnectButton("Mountain", 1, GTZone.mountain);
         ConnectButton("Basement", 1, GTZone.basement);
         ConnectButton("Metro", 1, GTZone.Metropolis);
-        ConnectButton("Arcade", 1, GTZone.arcade);
         ConnectButton("Critters", 1, GTZone.critters);
 
         ConnectButton("SkatePark", 2, GTZone.hoverboard);
@@ -75,7 +74,7 @@ public class MenuManager : MonoBehaviour
         ConnectButton("LavaForest", 2, GTZone.VIMExperience1); // this is free now
         ConnectButton("Space", 2, GTZone.spaceMap);
         ConnectButton("ShareMyBlocks", 2, GTZone.monkeBlocksShared);
-        ConnectButton("MagmArena", 2, GTZone.arena); // this map was removed (map doesnt work and textures are broken but that aint my problem)
+        ConnectButton("MagmArena", 2, GTZone.arena);
     }
 
     private void ConnectButton(string buttonName, int page, GTZone zone)
@@ -99,15 +98,16 @@ public class MenuManager : MonoBehaviour
 
     private IEnumerator TeleportButtonRoutine()
     {
-        if (Plugin.Instance.selectedZone == GTZone.none)
+        if (Plugin.Instance.selectedZone != GTZone.none)
+        {
+            Plugin.Instance.TeleportToZone(Plugin.Instance.selectedZone);
+            ToggleMenu();
+        }
+        else
         {
             offsetGO.transform.Find("Teleport").Find("Text").GetComponent<TextMeshPro>().text = "<color=red>You have no map selected!</color>";
             yield return new WaitForSeconds(2);
             offsetGO.transform.Find("Teleport").Find("Text").GetComponent<TextMeshPro>().text = "Go!";
-        }
-        else
-        {
-            Plugin.Instance.TeleportToZone(Plugin.Instance.selectedZone);
         }
     }
 
